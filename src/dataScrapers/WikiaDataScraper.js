@@ -116,11 +116,23 @@ const nameCompare = (first, second) => {
   return 0;
 };
 
+/*
+ * The Relic data is stored differently than weapon or warframe data
+ * Added the internal name (internalName) to support this case
+ * e.g.:
+ * local VoidData = {
+ *   ["Relics"] = {
+ *    ...
+ *   }
+ * }
+ *
+ */
 class WikiaDataScraper {
-  constructor(url, luaObjectName, transformFunction) {
+  constructor(url, luaObjectName, transformFunction, internalName) {
     this.url = url;
     this.luaObjectName = luaObjectName;
     this.transformFunction = transformFunction;
+    this.internalName = internalName || luaObjectName;
     if (typeof transformFunction === 'undefined') {
       this.transformFunction = defaultTransform;
     }
@@ -136,15 +148,15 @@ class WikiaDataScraper {
     if (!await fs.exists('./build')) {
       await fs.mkdir('./build');
     }
-    const imageUrls = await getImageUrls(jsonData[`${this.luaObjectName}s`]);
+    const imageUrls = await getImageUrls(jsonData[`${this.internalName}s`]);
 
     let things = [];
     
     try {
-      const keys = Object.keys(jsonData[`${this.luaObjectName}s`]);
+      const keys = Object.keys(jsonData[`${this.internalName}s`]);
 
       await Promise.all(await keys.map(async thingName => {
-        const thingToTransform = jsonData[`${this.luaObjectName}s`][thingName];
+        const thingToTransform = jsonData[`${this.internalName}s`][thingName];
         const transformedThing = await this.transformFunction(thingToTransform, imageUrls);
         things.push(transformedThing);
       }));
@@ -152,7 +164,7 @@ class WikiaDataScraper {
     } catch (e) {
       console.error(e.stack);
     }
-    await fs.writeFile(`./build/${this.luaObjectName.toLowerCase()}datafinal.json`, JSON.stringify(things));
+    await fs.writeFile(`./build/${this.internalName.toLowerCase()}datafinal.json`, JSON.stringify(things));
   }
 }
 

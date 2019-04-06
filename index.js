@@ -4,7 +4,7 @@ const fs = require('fs-extra');
 
 const WeaponScraper = require('./src/dataScrapers/WeaponScraper');
 const WarframeScraper = require('./src/dataScrapers/WarframeScraper');
-
+const RelicScraper = require('./src/dataScrapers/RelicScraper');
 
 const run = async () => {
   let scraper = new WeaponScraper();
@@ -23,8 +23,15 @@ const run = async () => {
   } catch (e) {
     console.error(`[ERROR] Error scraping Warframe data: ${e.stack}`);
   }
+
+  scraper = new RelicScraper();
+  try {
+    await scraper.scrape();
+  } catch (e) {
+    console.error(`[ERROR] Error scraping Relic data: ${e.stack}`);
+  }
+
   await fs.remove('./tmp');
 };
 
 run();
-
