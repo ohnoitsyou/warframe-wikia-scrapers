@@ -27,7 +27,7 @@ const transformRelic = (oldRelic) => {
     newRelic = {
       name: Name,
       tier: Tier,
-      valuted: IsVaulted || 0,
+      vaulted: IsVaulted || 0,
       baro: IsBaro || 0,
       drops: {
         common: transformDropClass(Drops.filter(it => it.Rarity === 'Common')),
