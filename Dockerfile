@@ -6,7 +6,8 @@ WORKDIR /usr/src/app
 RUN npm install
 RUN node index.js
 
-FROM library/nginx:latest
-COPY --from=builder /usr/src/app/build/* /usr/share/nginx/html/
+FROM bitnami/nginx:latest
+USER 0 
+COPY --from=builder /usr/src/app/build/* /app
 USER 1001
-EXPOSE 80
+EXPOSE 8080
