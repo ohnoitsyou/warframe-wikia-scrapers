@@ -8,4 +8,5 @@ RUN node index.js
 
 FROM library/nginx:latest
 COPY --from=builder /usr/src/app/build/* /usr/share/nginx/html/
+USER 101
 EXPOSE 80
